@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Article;
 use Illuminate\Http\Request;
 use App\Http\Resources\Article as ArticleResource;
+use Illuminate\Http\Response;
 
 
 class ArticleController extends Controller
@@ -16,20 +17,10 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        return ArticleResource::collection(Article::all());
+        return new Response(Article::all());
 
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
 
     /**
      * Display the specified resource.
@@ -39,9 +30,28 @@ class ArticleController extends Controller
      */
     public function show($id)
     {
-        return ArticleResource::collection(Article::findOrFail($id));
+        return new Response(Article::find($id));
 
     }
+
+
+    public function store(Request $request)
+    {
+        $article = Article::create($request->all());
+        if($article){
+            $data =[
+                'status'=>200,
+                'msg'=>'Votre article a été bien ajouté'
+            ];
+            return new Response($data);
+        }
+        $data =[
+            'status'=>400,
+            'msg'=>'une erreur s\'est produite'
+        ];
+        return new Response($data);
+    }
+
 
     /**
      * Update the specified resource in storage.
@@ -50,9 +60,22 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Article $article)
+    public function update(Request $request, $id)
     {
-        //
+        $article = Article::findOrFail($id);
+        if($article){
+            $article->update($request->all());
+            $data =[
+                'status'=>200,
+                'msg'=>'Votre article a été bien modifié'
+            ];
+            return new Response($data);
+        }
+        $data =[
+            'status'=>400,
+            'msg'=>'une erreur s\'est produite'
+        ];
+        return new Response($data);
     }
 
     /**
@@ -61,8 +84,27 @@ class ArticleController extends Controller
      * @param  \App\Article  $article
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Article $article)
+    public function destroy($id)
     {
-        //
+        $article = Article::find($id);
+        if($article){
+            $destroy = Article::destroy($id);
+            if($destroy){
+                $data =[
+                    'status'=>200,
+                    'msg'=>'Votre article a été bien supprimé'
+                ];
+                return new Response($data);
+            }
+        }
+
+        $data =[
+            'status'=>400,
+            'msg'=>'une erreur s\'est produite'
+        ];
+        return new Response($data);
+
+
+
     }
 }

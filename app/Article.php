@@ -24,10 +24,5 @@ class Article extends Model
     ];
 
 
-    /**
-     * The primary key associated with the table.
-     *
-     * @var string
-     */
-    protected $primaryKey = 'article_id';
+
 }

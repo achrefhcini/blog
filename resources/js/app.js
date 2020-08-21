@@ -10,7 +10,9 @@ import 'vue-material/dist/theme/default.css'
 Vue.use(VueRouter)
 Vue.use(VueMaterial)
 
-import Article from './components/ArticlesComponent'
+import Articles from './components/ArticlesComponent'
+import Article from './components/ArticleComponent'
+
 import App from './components/AppComponent'
 
 const router = new VueRouter({
@@ -19,9 +21,17 @@ const router = new VueRouter({
     linkActiveClass: 'active',
     routes: [
         {
-            path: '/article',
+            path: '/articles',
+            name: 'articles',
+            component: Articles
+        },
+        {
+            path: '/article/:id',
             name: 'article',
             component: Article
+        },
+        {
+            path: '*', redirect: '/articles'
         },
     ],
 });
