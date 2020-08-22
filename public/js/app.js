@@ -2045,6 +2045,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2055,7 +2067,8 @@ __webpack_require__.r(__webpack_exports__);
       showDialogEdit: false,
       article: null,
       resultAlert: false,
-      alertContent: ""
+      alertContent: "",
+      categories: null
     };
   },
   mounted: function mounted() {
@@ -2063,6 +2076,9 @@ __webpack_require__.r(__webpack_exports__);
 
     axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "article/" + this.$route.params.id).then(function (response) {
       _this.article = response.data;
+    });
+    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "catgories").then(function (response) {
+      _this.categories = response.data;
     });
   },
   methods: {
@@ -2196,6 +2212,41 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2206,39 +2257,48 @@ __webpack_require__.r(__webpack_exports__);
       resultAlert: false,
       alertContent: "",
       articles: [],
+      categories: null,
       newArticle: {
         "image": "",
         "titre": "",
         "text": "",
-        "created_at": ""
+        "category_id": ""
       }
     };
   },
   methods: {
-    ajouter: function ajouter() {
+    filtrer: function filtrer(slug) {
       var _this = this;
+
+      axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "articles/" + slug).then(function (response) {
+        _this.articles = response.data;
+      });
+    },
+    ajouter: function ajouter() {
+      var _this2 = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.post(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "article/", this.newArticle).then(function (response) {
         console.log(response.data);
-        _this.alertContent = response.data.msg;
+        _this2.alertContent = response.data.msg;
 
         if (response.data.status === 200) {
-          _this.showDialogAdd = false, _this.resultAlert = true;
-          setTimeout(function () {
-            _this.$router.push('/articles');
-          }, 3000);
+          _this2.showDialogAdd = false, _this2.resultAlert = true;
+
+          _this2.articles.push(response.data.article);
         } else {
-          _this.resultAlert = true;
+          _this2.resultAlert = true;
         }
       });
     }
   },
   mounted: function mounted() {
-    var _this2 = this;
+    var _this3 = this;
 
-    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "articles").then(function (response) {
-      _this2.articles = response.data;
-      console.log(_this2.articles);
+    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "articles/all").then(function (response) {
+      _this3.articles = response.data;
+    });
+    axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "catgories").then(function (response) {
+      _this3.categories = response.data;
     });
   }
 });
@@ -2360,7 +2420,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\n.md-card[data-v-7b57cc65]{\r\n    margin: 30px;\n}\n.md-fab-bottom-right[data-v-7b57cc65]{\r\n    position: fixed !important;\r\n    right: 15px; /* Add this and change value to set the margin you want */\n}\r\n", ""]);
+exports.push([module.i, "\n.md-card[data-v-7b57cc65]{\r\n    margin: 30px;\n}\n.filter[data-v-7b57cc65]{\r\n    display: flex;\r\n    justify-content: center;\n}\n.md-fab-bottom-right[data-v-7b57cc65]{\r\n    position: fixed !important;\r\n    right: 15px; /* Add this and change value to set the margin you want */\n}\r\n", ""]);
 
 // exports
 
@@ -3769,6 +3829,67 @@ var render = function() {
                                       1
                                     ),
                                     _vm._v(" "),
+                                    _vm.categories != null
+                                      ? _c(
+                                          "div",
+                                          { staticClass: "md-layout-item" },
+                                          [
+                                            _c(
+                                              "md-field",
+                                              [
+                                                _c(
+                                                  "md-select",
+                                                  {
+                                                    attrs: {
+                                                      name: "category",
+                                                      id: "cat",
+                                                      placeholder: "Categorie"
+                                                    },
+                                                    model: {
+                                                      value:
+                                                        _vm.article.category_id,
+                                                      callback: function($$v) {
+                                                        _vm.$set(
+                                                          _vm.article,
+                                                          "category_id",
+                                                          $$v
+                                                        )
+                                                      },
+                                                      expression:
+                                                        "article.category_id"
+                                                    }
+                                                  },
+                                                  _vm._l(
+                                                    _vm.categories,
+                                                    function(cat) {
+                                                      return _c(
+                                                        "md-option",
+                                                        {
+                                                          key: cat.id,
+                                                          attrs: {
+                                                            value: cat.id
+                                                          }
+                                                        },
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                    " +
+                                                              _vm._s(cat.name) +
+                                                              "\n                                                "
+                                                          )
+                                                        ]
+                                                      )
+                                                    }
+                                                  ),
+                                                  1
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      : _vm._e(),
+                                    _vm._v(" "),
                                     _c(
                                       "md-field",
                                       [
@@ -3900,6 +4021,51 @@ var render = function() {
         1
       ),
       _vm._v(" "),
+      _c("div", [
+        _c("br"),
+        _vm._v(" "),
+        _c("br"),
+        _vm._v(" "),
+        _c(
+          "div",
+          { staticClass: "section container filter" },
+          [
+            _c(
+              "md-chip",
+              {
+                staticClass: "md-primary",
+                attrs: { "md-clickable": "" },
+                on: {
+                  click: function($event) {
+                    return _vm.filtrer("all")
+                  }
+                }
+              },
+              [_vm._v("Tous")]
+            ),
+            _vm._v(" "),
+            _vm._l(_vm.categories, function(categorie) {
+              return [
+                _c(
+                  "md-chip",
+                  {
+                    staticClass: "md-primary",
+                    attrs: { "md-clickable": "" },
+                    on: {
+                      click: function($event) {
+                        return _vm.filtrer(categorie.slug)
+                      }
+                    }
+                  },
+                  [_vm._v(_vm._s(categorie.name))]
+                )
+              ]
+            })
+          ],
+          2
+        )
+      ]),
+      _vm._v(" "),
       _c(
         "div",
         { staticClass: "md-layout section" },
@@ -3916,21 +4082,49 @@ var render = function() {
                   _c(
                     "md-card",
                     [
-                      _c("md-card-media", [
-                        _c("img", {
-                          attrs: { src: article.image, alt: "People" }
-                        })
-                      ]),
+                      _c(
+                        "router-link",
+                        {
+                          attrs: {
+                            to: { name: "article", params: { id: article.id } }
+                          }
+                        },
+                        [
+                          _c("md-card-media", [
+                            _c("img", {
+                              attrs: { src: article.image, alt: "People" }
+                            })
+                          ])
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
-                      _c("md-card-header", [
-                        _c("div", { staticClass: "md-title" }, [
-                          _vm._v(_vm._s(article.titre))
-                        ]),
-                        _vm._v(" "),
-                        _c("div", { staticClass: "md-subhead" }, [
-                          _vm._v(_vm._s(article.text))
-                        ])
-                      ]),
+                      _c(
+                        "md-card-header",
+                        [
+                          _c(
+                            "router-link",
+                            {
+                              attrs: {
+                                to: {
+                                  name: "article",
+                                  params: { id: article.id }
+                                }
+                              }
+                            },
+                            [
+                              _c("div", { staticClass: "md-title" }, [
+                                _vm._v(_vm._s(article.titre))
+                              ])
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "md-subhead" }, [
+                            _vm._v(_vm._s(article.text))
+                          ])
+                        ],
+                        1
+                      ),
                       _vm._v(" "),
                       _c(
                         "md-card-expand",
@@ -3987,7 +4181,7 @@ var render = function() {
                       }
                     },
                     [
-                      _c("md-dialog-title", [_vm._v("Modification")]),
+                      _c("md-dialog-title", [_vm._v("Ajouter un article")]),
                       _vm._v(" "),
                       _c(
                         "div",
@@ -4029,6 +4223,60 @@ var render = function() {
                             1
                           ),
                           _vm._v(" "),
+                          _vm.categories != null
+                            ? _c(
+                                "div",
+                                { staticClass: "md-layout-item" },
+                                [
+                                  _c(
+                                    "md-field",
+                                    [
+                                      _c(
+                                        "md-select",
+                                        {
+                                          attrs: {
+                                            name: "category",
+                                            id: "cat",
+                                            placeholder: "Categorie"
+                                          },
+                                          model: {
+                                            value: _vm.newArticle.category_id,
+                                            callback: function($$v) {
+                                              _vm.$set(
+                                                _vm.newArticle,
+                                                "category_id",
+                                                $$v
+                                              )
+                                            },
+                                            expression: "newArticle.category_id"
+                                          }
+                                        },
+                                        _vm._l(_vm.categories, function(cat) {
+                                          return _c(
+                                            "md-option",
+                                            {
+                                              key: cat.id,
+                                              attrs: { value: cat.id }
+                                            },
+                                            [
+                                              _vm._v(
+                                                "\n                                    " +
+                                                  _vm._s(cat.name) +
+                                                  "\n                                "
+                                              )
+                                            ]
+                                          )
+                                        }),
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            : _vm._e(),
+                          _vm._v(" "),
                           _c(
                             "md-field",
                             [
@@ -4059,7 +4307,7 @@ var render = function() {
                               staticClass: "md-primary",
                               on: {
                                 click: function($event) {
-                                  _vm.showDialogEdit = false
+                                  _vm.showDialogAdd = false
                                 }
                               }
                             },

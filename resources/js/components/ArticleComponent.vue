@@ -60,6 +60,18 @@
                                             <md-input v-model="article.image"></md-input>
                                         </md-field>
 
+
+                                        <div class="md-layout-item" v-if="categories!= null">
+                                            <md-field>
+                                                <md-select v-model="article.category_id" name="category" id="cat"  placeholder="Categorie">
+                                                    <md-option v-for="cat in categories" v-bind:key="cat.id" :value="cat.id">
+                                                        {{cat.name}}
+                                                    </md-option>
+
+                                                </md-select>
+                                            </md-field>
+                                        </div>
+
                                         <md-field>
                                             <label>Text</label>
                                             <md-textarea v-model="article.text"></md-textarea>
@@ -104,6 +116,7 @@
                 article : null,
                 resultAlert : false,
                 alertContent : "",
+                categories : null,
             }
         },
         mounted()  {
@@ -111,6 +124,13 @@
                 .get(localApi+"article/"+this.$route.params.id)
                 .then(response => {
                     (this.article = response.data)
+                })
+
+            axios
+                .get(localApi+"catgories")
+                .then(response => {
+                    (this.categories = response.data)
+
                 })
         },
         methods: {

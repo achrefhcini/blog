@@ -17,7 +17,15 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
+        if($request->slug!="all"){
+           $articles =  Article::whereHas('category', function ($query) use($request) {
+                return $query->where('slug',"=", $request->slug);
+            })->get();
+            return new Response($articles);
+
+        }
         return new Response(Article::all());
+
 
     }
 
@@ -41,7 +49,8 @@ class ArticleController extends Controller
         if($article){
             $data =[
                 'status'=>200,
-                'msg'=>'Votre article a été bien ajouté'
+                'msg'=>'Votre article a été bien ajouté',
+                'article'=>$article
             ];
             return new Response($data);
         }
