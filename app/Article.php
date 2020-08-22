@@ -16,8 +16,17 @@ class Article extends Model
      * @var array
      */
     protected $fillable = [
-        'titre', 'image', 'text',
+        'titre', 'image' ,'category_id', 'text',
     ];
+
+    /**
+     * Relationship between a post with a category
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function category()
+    {
+        return $this->belongsTo(Categorie::class);
+    }
 
     protected static $imageFields = [
         'image'

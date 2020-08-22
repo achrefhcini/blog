@@ -21,6 +21,7 @@ class ArticleSeeder extends Seeder
             DB::table('articles')->insert([
                 'titre' => $faker->realText(50),
                  'created_at' => $date,
+                'category_id' => null,
                 'image' => "http://lorempixel.com/600/400/sports/",
                 'text' =>  $faker->realText(140),
             ]);
