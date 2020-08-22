@@ -2247,6 +2247,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -2257,6 +2268,7 @@ __webpack_require__.r(__webpack_exports__);
       resultAlert: false,
       alertContent: "",
       articles: [],
+      notFound: false,
       categories: null,
       newArticle: {
         "image": "",
@@ -2267,11 +2279,20 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
+    showAddPop: function showAddPop() {
+      this.showDialogAdd = true;
+    },
     filtrer: function filtrer(slug) {
       var _this = this;
 
       axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "articles/" + slug).then(function (response) {
         _this.articles = response.data;
+
+        if (_this.articles.length === 0) {
+          _this.notFound = true;
+        } else {
+          _this.notFound = false;
+        }
       });
     },
     ajouter: function ajouter() {
@@ -2285,6 +2306,12 @@ __webpack_require__.r(__webpack_exports__);
           _this2.showDialogAdd = false, _this2.resultAlert = true;
 
           _this2.articles.push(response.data.article);
+
+          if (_this2.articles.length === 0) {
+            _this2.notFound = true;
+          } else {
+            _this2.notFound = false;
+          }
         } else {
           _this2.resultAlert = true;
         }
@@ -2296,6 +2323,12 @@ __webpack_require__.r(__webpack_exports__);
 
     axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "articles/all").then(function (response) {
       _this3.articles = response.data;
+
+      if (_this3.articles.length === 0) {
+        _this3.notFound = true;
+      } else {
+        _this3.notFound = false;
+      }
     });
     axios__WEBPACK_IMPORTED_MODULE_1___default.a.get(_variables__WEBPACK_IMPORTED_MODULE_0__["localApi"] + "catgories").then(function (response) {
       _this3.categories = response.data;
@@ -4013,7 +4046,7 @@ var render = function() {
           attrs: { "aria-label": "Ajouter un article" },
           on: {
             click: function($event) {
-              _vm.showDialogAdd = true
+              return _vm.showAddPop()
             }
           }
         },
@@ -4065,6 +4098,215 @@ var render = function() {
           2
         )
       ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "section container" },
+        [
+          _c("br"),
+          _vm._v(" "),
+          _c("br"),
+          _vm._v(" "),
+          _vm.notFound
+            ? _c(
+                "md-empty-state",
+                {
+                  attrs: {
+                    "md-icon": "devices_other",
+                    "md-label": "0 articles",
+                    "md-description":
+                      "On a pas trouvé des articles pour cette categorie"
+                  }
+                },
+                [
+                  _c(
+                    "md-button",
+                    {
+                      staticClass: "md-primary md-raised",
+                      on: {
+                        click: function($event) {
+                          return _vm.showAddPop()
+                        }
+                      }
+                    },
+                    [_vm._v("Ajouter un nouveau article")]
+                  )
+                ],
+                1
+              )
+            : _vm._e()
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        [
+          _c(
+            "md-dialog",
+            {
+              attrs: { "md-active": _vm.showDialogAdd },
+              on: {
+                "update:mdActive": function($event) {
+                  _vm.showDialogAdd = $event
+                },
+                "update:md-active": function($event) {
+                  _vm.showDialogAdd = $event
+                }
+              }
+            },
+            [
+              _c("md-dialog-title", [_vm._v("Ajouter un article")]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "container" },
+                [
+                  _c(
+                    "md-field",
+                    [
+                      _c("label", [_vm._v("Titre")]),
+                      _vm._v(" "),
+                      _c("md-input", {
+                        model: {
+                          value: _vm.newArticle.titre,
+                          callback: function($$v) {
+                            _vm.$set(_vm.newArticle, "titre", $$v)
+                          },
+                          expression: "newArticle.titre"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "md-field",
+                    [
+                      _c("label", [_vm._v("Image Url")]),
+                      _vm._v(" "),
+                      _c("md-input", {
+                        model: {
+                          value: _vm.newArticle.image,
+                          callback: function($$v) {
+                            _vm.$set(_vm.newArticle, "image", $$v)
+                          },
+                          expression: "newArticle.image"
+                        }
+                      })
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _vm.categories != null
+                    ? _c(
+                        "div",
+                        { staticClass: "md-layout-item" },
+                        [
+                          _c(
+                            "md-field",
+                            [
+                              _c(
+                                "md-select",
+                                {
+                                  attrs: {
+                                    name: "category",
+                                    id: "cat",
+                                    placeholder: "Categorie"
+                                  },
+                                  model: {
+                                    value: _vm.newArticle.category_id,
+                                    callback: function($$v) {
+                                      _vm.$set(
+                                        _vm.newArticle,
+                                        "category_id",
+                                        $$v
+                                      )
+                                    },
+                                    expression: "newArticle.category_id"
+                                  }
+                                },
+                                _vm._l(_vm.categories, function(cat) {
+                                  return _c(
+                                    "md-option",
+                                    { key: cat.id, attrs: { value: cat.id } },
+                                    [
+                                      _vm._v(
+                                        "\n                                " +
+                                          _vm._s(cat.name) +
+                                          "\n                            "
+                                      )
+                                    ]
+                                  )
+                                }),
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c(
+                    "md-field",
+                    [
+                      _c("label", [_vm._v("Text")]),
+                      _vm._v(" "),
+                      _c("md-textarea", {
+                        model: {
+                          value: _vm.newArticle.text,
+                          callback: function($$v) {
+                            _vm.$set(_vm.newArticle, "text", $$v)
+                          },
+                          expression: "newArticle.text"
+                        }
+                      })
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "md-dialog-actions",
+                [
+                  _c(
+                    "md-button",
+                    {
+                      staticClass: "md-primary",
+                      on: {
+                        click: function($event) {
+                          _vm.showDialogAdd = false
+                        }
+                      }
+                    },
+                    [_vm._v("Fermer")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "md-button",
+                    {
+                      staticClass: "md-primary",
+                      on: {
+                        click: function($event) {
+                          return _vm.ajouter()
+                        }
+                      }
+                    },
+                    [_vm._v("Sauvgarder")]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
       _vm._v(" "),
       _c(
         "div",
@@ -4153,178 +4395,6 @@ var render = function() {
                                 1
                               )
                             ]
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                [
-                  _c(
-                    "md-dialog",
-                    {
-                      attrs: { "md-active": _vm.showDialogAdd },
-                      on: {
-                        "update:mdActive": function($event) {
-                          _vm.showDialogAdd = $event
-                        },
-                        "update:md-active": function($event) {
-                          _vm.showDialogAdd = $event
-                        }
-                      }
-                    },
-                    [
-                      _c("md-dialog-title", [_vm._v("Ajouter un article")]),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { staticClass: "container" },
-                        [
-                          _c(
-                            "md-field",
-                            [
-                              _c("label", [_vm._v("Titre")]),
-                              _vm._v(" "),
-                              _c("md-input", {
-                                model: {
-                                  value: _vm.newArticle.titre,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.newArticle, "titre", $$v)
-                                  },
-                                  expression: "newArticle.titre"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "md-field",
-                            [
-                              _c("label", [_vm._v("Image Url")]),
-                              _vm._v(" "),
-                              _c("md-input", {
-                                model: {
-                                  value: _vm.newArticle.image,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.newArticle, "image", $$v)
-                                  },
-                                  expression: "newArticle.image"
-                                }
-                              })
-                            ],
-                            1
-                          ),
-                          _vm._v(" "),
-                          _vm.categories != null
-                            ? _c(
-                                "div",
-                                { staticClass: "md-layout-item" },
-                                [
-                                  _c(
-                                    "md-field",
-                                    [
-                                      _c(
-                                        "md-select",
-                                        {
-                                          attrs: {
-                                            name: "category",
-                                            id: "cat",
-                                            placeholder: "Categorie"
-                                          },
-                                          model: {
-                                            value: _vm.newArticle.category_id,
-                                            callback: function($$v) {
-                                              _vm.$set(
-                                                _vm.newArticle,
-                                                "category_id",
-                                                $$v
-                                              )
-                                            },
-                                            expression: "newArticle.category_id"
-                                          }
-                                        },
-                                        _vm._l(_vm.categories, function(cat) {
-                                          return _c(
-                                            "md-option",
-                                            {
-                                              key: cat.id,
-                                              attrs: { value: cat.id }
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                                    " +
-                                                  _vm._s(cat.name) +
-                                                  "\n                                "
-                                              )
-                                            ]
-                                          )
-                                        }),
-                                        1
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            : _vm._e(),
-                          _vm._v(" "),
-                          _c(
-                            "md-field",
-                            [
-                              _c("label", [_vm._v("Text")]),
-                              _vm._v(" "),
-                              _c("md-textarea", {
-                                model: {
-                                  value: _vm.newArticle.text,
-                                  callback: function($$v) {
-                                    _vm.$set(_vm.newArticle, "text", $$v)
-                                  },
-                                  expression: "newArticle.text"
-                                }
-                              })
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "md-dialog-actions",
-                        [
-                          _c(
-                            "md-button",
-                            {
-                              staticClass: "md-primary",
-                              on: {
-                                click: function($event) {
-                                  _vm.showDialogAdd = false
-                                }
-                              }
-                            },
-                            [_vm._v("Fermer")]
-                          ),
-                          _vm._v(" "),
-                          _c(
-                            "md-button",
-                            {
-                              staticClass: "md-primary",
-                              on: {
-                                click: function($event) {
-                                  return _vm.ajouter()
-                                }
-                              }
-                            },
-                            [_vm._v("Sauvgarder")]
                           )
                         ],
                         1

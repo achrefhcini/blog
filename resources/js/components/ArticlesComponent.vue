@@ -1,7 +1,7 @@
 <template>
 
     <div class="wrapper">
-        <md-button  @click="showDialogAdd = true" class="md-fab md-fab-bottom-right"  aria-label="Ajouter un article">
+        <md-button  @click="showAddPop()" class="md-fab md-fab-bottom-right"  aria-label="Ajouter un article">
             <md-icon>add</md-icon>
         </md-button>
         <div>
@@ -17,6 +17,58 @@
 
             </div>
         </div>
+        <div class="section container">
+            <br>
+            <br>
+            <md-empty-state v-if="notFound"
+                            md-icon="devices_other"
+                            md-label="0 articles"
+                            md-description="On a pas trouvé des articles pour cette categorie">
+                <md-button @click="showAddPop()" class="md-primary md-raised">Ajouter un nouveau article</md-button>
+            </md-empty-state>
+        </div>
+
+        <div>
+            <md-dialog :md-active.sync="showDialogAdd">
+                <md-dialog-title>Ajouter un article</md-dialog-title>
+
+                <div class="container">
+                    <md-field>
+                        <label>Titre</label>
+                        <md-input v-model="newArticle.titre"></md-input>
+                    </md-field>
+
+                    <md-field>
+                        <label>Image Url</label>
+                        <md-input v-model="newArticle.image"></md-input>
+                    </md-field>
+
+                    <div class="md-layout-item" v-if="categories!= null">
+                        <md-field>
+                            <md-select v-model="newArticle.category_id" name="category" id="cat"  placeholder="Categorie">
+                                <md-option v-for="cat in categories" v-bind:key="cat.id" :value="cat.id">
+                                    {{cat.name}}
+                                </md-option>
+
+                            </md-select>
+                        </md-field>
+                    </div>
+
+                    <md-field>
+                        <label>Text</label>
+                        <md-textarea v-model="newArticle.text"></md-textarea>
+                    </md-field>
+
+                </div>
+
+                <md-dialog-actions>
+                    <md-button class="md-primary" @click="showDialogAdd = false">Fermer</md-button>
+                    <md-button class="md-primary" @click="ajouter()">Sauvgarder</md-button>
+                </md-dialog-actions>
+            </md-dialog>
+
+        </div>
+
     <div class="md-layout section">
 
         <template v-for="article of articles">
@@ -59,48 +111,7 @@
                     </md-card-expand>
                 </md-card>
             </div>
-            <div>
-                <md-dialog :md-active.sync="showDialogAdd">
-                    <md-dialog-title>Ajouter un article</md-dialog-title>
 
-                    <div class="container">
-                        <md-field>
-                            <label>Titre</label>
-                            <md-input v-model="newArticle.titre"></md-input>
-                        </md-field>
-
-                        <md-field>
-                            <label>Image Url</label>
-                            <md-input v-model="newArticle.image"></md-input>
-                        </md-field>
-
-                        <div class="md-layout-item" v-if="categories!= null">
-                            <md-field>
-                                <md-select v-model="newArticle.category_id" name="category" id="cat"  placeholder="Categorie">
-                                    <md-option v-for="cat in categories" v-bind:key="cat.id" :value="cat.id">
-                                        {{cat.name}}
-                                    </md-option>
-
-                                </md-select>
-                            </md-field>
-                        </div>
-
-                        <md-field>
-                            <label>Text</label>
-                            <md-textarea v-model="newArticle.text"></md-textarea>
-                        </md-field>
-
-                    </div>
-
-                    <md-dialog-actions>
-                        <md-button class="md-primary" @click="showDialogAdd = false">Fermer</md-button>
-                        <md-button class="md-primary" @click="ajouter()">Sauvgarder</md-button>
-                    </md-dialog-actions>
-                </md-dialog>
-
-
-
-            </div>
 
             <div>
                 <md-dialog-alert
@@ -125,6 +136,7 @@
                 resultAlert : false,
                 alertContent : "",
                 articles: [],
+                notFound : false ,
                 categories : null,
                 newArticle : {
                     "image" : "",
@@ -135,14 +147,25 @@
             }
         },
         methods: {
+            showAddPop : function(){
+                this.showDialogAdd = true;
+            },
             filtrer: function (slug){
-            axios.get(localApi+"articles/"+slug)
+                axios.get(localApi+"articles/"+slug)
                     .then(response => {
                         (this.articles = response.data)
+                        if(this.articles.length === 0){
+                            this.notFound = true;
+                        }
+                        else {
+                            this.notFound = false;
+
+                        }
 
                     })
             },
             ajouter: function() {
+
                 axios
                     .post(localApi+"article/",this.newArticle)
                     .then(response => {
@@ -152,6 +175,13 @@
                             this.showDialogAdd = false,
                                 this.resultAlert = true;
                             this.articles.push(response.data.article)
+                            if(this.articles.length === 0){
+                                this.notFound = true;
+                            }
+                            else {
+                                this.notFound = false;
+
+                            }
                         }
                         else {
                             this.resultAlert = true
@@ -160,10 +190,18 @@
             }
         },
         mounted()  {
+
             axios
                 .get(localApi+"articles/all")
                 .then(response => {
                     (this.articles = response.data)
+                    if(this.articles.length === 0){
+                        this.notFound = true;
+                    }
+                    else {
+                        this.notFound = false;
+
+                    }
                 })
             axios
                 .get(localApi+"catgories")
